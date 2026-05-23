@@ -1,7 +1,7 @@
 """
 Scraper for the shi_data.txt auction history file.
 """
-
+from typing import Optional, Callable
 from collections import defaultdict
 
 import numpy as np
@@ -27,7 +27,10 @@ class ShiScraper(AuctionScraper):
     def __init__(self, path: str):
         self.path = path
 
-    def get_data(self) -> tuple[list, np.ndarray]:
+    def get_data(
+            self,
+            acceptance_function: Optional[Callable[[str], bool]] = None
+        ) -> tuple[list, np.ndarray]:
         prices_by_artist = defaultdict(list)
 
         with open(self.path, "r", encoding="utf-8", errors="replace") as f:
@@ -39,6 +42,8 @@ class ShiScraper(AuctionScraper):
                 artist = fields[self.ARTIST_COL].strip()
                 price_str = fields[self.PRICE_COL].strip()
                 if not artist or not price_str:
+                    continue
+                if acceptance_function is not None and not acceptance_function(artist):
                     continue
                 try:
                     price = float(price_str)

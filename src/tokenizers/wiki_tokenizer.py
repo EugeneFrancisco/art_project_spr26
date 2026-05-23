@@ -63,6 +63,14 @@ class WikiTokenizer(Tokenizer):
         except KeyError:
             return None
 
+    def has_word(self, name: str) -> bool:
+        """Return True iff `name` is in the model's word vocabulary."""
+        return self.get_vector(Token(name, is_entity=False)) is not None
+
+    def has_entity(self, name: str) -> bool:
+        """Return True iff `name` is in the model's Wikipedia entity vocabulary."""
+        return self.get_vector(Token(name, is_entity=True)) is not None
+
     def get_neighbors(self, vec: np.ndarray, k: int) -> list[tuple[Token, float]]:
         """
         Find the `k` tokens whose embeddings are closest to `vec` in cosine
