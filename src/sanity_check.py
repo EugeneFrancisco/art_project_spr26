@@ -16,7 +16,7 @@ import glob
 import os
 import sys
 
-from wiki_tokenizer import WikiTokenizer
+from src.wiki_tokenizer import WikiTokenizer
 
 
 MODEL_DIR = os.path.join(os.path.dirname(__file__), "..", "models")

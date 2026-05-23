@@ -6,7 +6,7 @@ from typing import Optional
 import numpy as np
 from wikipedia2vec import Wikipedia2Vec
 
-from tokenizer import Tokenizer
+from src.tokenizers.tokenizer import Tokenizer
 
 
 class WikiTokenizer(Tokenizer):
