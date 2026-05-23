@@ -16,8 +16,8 @@ import glob
 import os
 import sys
 
-from src.wiki_tokenizer import WikiTokenizer
-
+from src.tokenizers.tokenizer import Token
+from src.tokenizers.wiki_tokenizer import WikiTokenizer
 
 MODEL_DIR = os.path.join(os.path.dirname(__file__), "..", "models")
 MISSING_TOKEN = "zzzqqqxxx_not_a_real_token_12345"
@@ -58,6 +58,14 @@ def main() -> None:
         assert v.shape == (tok.dim,)
     print(f"get_vector for celebrities OK: {celebrities}")
 
+    # --- get_vector: Token with is_entity selects the vocabulary exactly ---
+    word_obama = tok.get_vector(Token("obama", is_entity=False))
+    entity_obama = tok.get_vector(Token("Barack Obama", is_entity=True))
+    assert word_obama is not None and entity_obama is not None
+    # Entity-flagged lookup of a word-only string should miss, and vice versa.
+    assert tok.get_vector(Token("Barack Obama", is_entity=False)) is None
+    print("get_vector with Token(is_entity=...) OK")
+
     # --- get_vector: nonsense token returns None ---
     assert tok.get_vector(MISSING_TOKEN) is None
     print("get_vector for nonsense -> None (OK)")
@@ -84,14 +92,24 @@ def main() -> None:
     neighbors = tok.most_similar("Taylor Swift", k=5)
     print("most_similar('Taylor Swift', k=5):")
     for token, score in neighbors:
-        print(f"  {score:+.3f}  {token}")
+        print(f"  {score:+.3f}  {token!r}")
     assert len(neighbors) <= 5
     assert all(token != "Taylor Swift" for token, _ in neighbors)
-    assert all(isinstance(t, str) and isinstance(s, float) for t, s in neighbors)
+    assert all(isinstance(t, Token) and isinstance(s, float) for t, s in neighbors)
 
     # missing query -> []
     assert tok.most_similar(MISSING_TOKEN) == []
     print("most_similar missing-token -> [] (OK)")
+
+    # --- Token disambiguation: word vs. entity with the same surface form ---
+    # "obama" exists as a lowercase word; "Barack Obama" as an entity page.
+    # They should produce distinct Tokens whose `url` reflects entity-ness.
+    word_tok = Token("obama", is_entity=False)
+    entity_tok = Token("Barack Obama", is_entity=True)
+    assert word_tok != entity_tok
+    assert word_tok.url is None
+    assert entity_tok.url == "https://en.wikipedia.org/wiki/Barack_Obama"
+    print(f"Token disambiguation OK ({entity_tok!r} -> {entity_tok.url})")
 
     print("\nAll sanity checks passed.")
 
