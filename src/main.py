@@ -5,19 +5,12 @@ Main script for experimenting
 
 from src.tokenizers.wiki_tokenizer import WikiTokenizer
 
-WIKI_PATH = "models/enwiki_20180420_100d.pkl"
+WIKI_PATH = "models/enwiki_20180420_500d.pkl"
 
 def main():
     wiki = WikiTokenizer(WIKI_PATH)
-    # Pollock - Picasso = Abstract Expressionism - Cubism
-    # Pollock - Abstract Expressionism + Cubism = _____
-    
-    query = wiki.analogy(
-        positives=["Gerhard Richter", "Jackson Pollock"],
-        negatives=["Anselm Kiefer"],
-        k=10
-    )
-    print(query)
+    matches = wiki.most_similar("Mona Lisa", k = 10)
+    print(matches)
     
 
 

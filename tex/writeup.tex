@@ -1,0 +1,29 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{newstyle_rm}
+\usepackage{titling}
+
+\setlength{\droptitle}{-8em}
+
+\title{Arthist 238}
+\author{Eugene Francisco}
+\date{May 2026}
+
+\begin{document}
+
+\begin{singlespace}
+	\maketitle
+\end{singlespace}
+
+\section*{Introduction}
+\section*{Embeddings as Price Predictors}
+For each artist $a$, let $x_a$ be its associated embedding vector. Let $y_a$ be the median log price for $a$. We train a regressor $\hat f_\theta(\cdot)$ to predict median log prices by minimizing the squared loss
+\begin{align*}
+	L(\theta; X) = \sum_{a\in A}\left(\hat f_\theta(x_a) - y_a\right)^2.
+\end{align*}
+
+
+
+
+
+\end{document}

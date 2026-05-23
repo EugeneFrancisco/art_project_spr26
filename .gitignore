@@ -1,6 +1,8 @@
 # Project-specific
 models/*
 
+data/*
+
 # macOS
 .DS_Store
 .AppleDouble
