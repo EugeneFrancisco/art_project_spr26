@@ -5,7 +5,7 @@ Tokenizer implementation backed by a pretrained Wikipedia2Vec model.
 from typing import Optional
 import numpy as np
 from wikipedia2vec import Wikipedia2Vec
-from wikipedia2vec.dictionary import Entity, Word
+from wikipedia2vec.dictionary import Entity, Word # pylint: disable=E0611
 
 from src.tokenizers.tokenizer import Token, Tokenizer
 
