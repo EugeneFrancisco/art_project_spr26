@@ -12,16 +12,8 @@ SHI_DATA_PATH = "data/shi_data.txt"
 def main():
     shi_scraper = ShiScraper(SHI_DATA_PATH)
     wiki = WikiTokenizer(WIKI_PATH)
-    names, prices = shi_scraper.get_data()
-
-    count = 0
-    for name in names:
-        if name in wiki:
-            count += 1
-    
-    print("\n\n")
-    print(count)
-    print("\n\n")
+    names, prices = shi_scraper.get_data_in_wiki(wiki, True)
+    import ipdb; ipdb.set_trace()
     
 
 

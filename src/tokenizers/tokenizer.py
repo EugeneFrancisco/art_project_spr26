@@ -92,6 +92,36 @@ class Tokenizer(ABC):
             `token`, or `None` if the token is not in the vocabulary.
         """
 
+    def get_vectors(
+            self,
+            tokens: list[str | Token],
+            include_all: bool
+        ) -> Optional[np.ndarray]:
+        """
+        Returns the np array of embeddings associated with the passed in tokens.
+
+        Args:
+            tokens: a list of n strings (or Tokens) with which we want to query
+            include_all: if set to true, then this function will raise an error if
+                not all the strings in tokens are available. Otherwise, we will
+                just include only those strings which are included in the tokenizer.
+        Returns:
+            an m by d np array of all the embeddings. If include_all is set to true, then
+            m will be the same as n (the length of tokens).
+        """
+        vectors = []
+        for token in tokens:
+            vec = self.get_vector(token)
+            if vec is None:
+                if include_all:
+                    raise ValueError(f"Token {token!r} is not in the vocabulary.")
+                continue
+            vectors.append(vec)
+
+        if not vectors:
+            return np.empty((0, self.dim))
+        return np.vstack(vectors)
+
     @abstractmethod
     def get_neighbors(self, vec: np.ndarray, k: int) -> list[tuple[Token, float]]:
         """
