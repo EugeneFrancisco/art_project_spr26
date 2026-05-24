@@ -4,20 +4,21 @@ This class defines the abstract base class for models that train.
 
 from abc import ABC, abstractmethod
 import numpy as np
-from src.tokenizers.tokenizer import Token
+from src.tokenizers.tokenizer import Token, Tokenizer
 
 class Vec2Price(ABC):
     """
     An abstract base class for taking embedding vectors and predicting
     prices.
     """
-    def __init__(self, embedding_dim: int):
+    def __init__(self, tokenizer: Tokenizer):
         """
         Inheritors should add in this constructor any necessary
         hyperparameters and all data for testing and training that would
         be needed in the abstract methods below.
         """
-        self.embedding_dim = embedding_dim
+        self.tokenizer = tokenizer
+        self.embedding_dim = tokenizer.dim
 
     @abstractmethod
     def train(self):
@@ -44,4 +45,12 @@ class Vec2Price(ABC):
     def get_preds(self, names: list[str | Token]) -> np.ndarray:
         """
         Get an array of predicted prices for the list of passed in names.
+        """
+
+    @abstractmethod
+    def load_model(self, path: str) -> None:
+        """
+        Load a previously trained model from `path` into this instance.
+        After this call, the trainer should be ready to serve predictions
+        without first calling `train`.
         """

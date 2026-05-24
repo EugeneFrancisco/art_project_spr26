@@ -2,7 +2,6 @@
 Scraper for the shi_data.txt auction history file.
 """
 from typing import Optional, Callable
-from collections import defaultdict
 
 import numpy as np
 
@@ -11,7 +10,7 @@ from src.data_utils.data_wrapper import AuctionScraper
 
 class ShiScraper(AuctionScraper):
     """
-    Parses shi_data.txt and reports each artist's median sale price.
+    Parses shi_data.txt and emits one (artist, price) pair per individual sale.
 
     The file is tab-separated with 23 columns. Artist names live in column 1
     and prices in column 7. Names contain spaces, so naive whitespace
@@ -31,7 +30,8 @@ class ShiScraper(AuctionScraper):
             self,
             acceptance_function: Optional[Callable[[str], bool]] = None
         ) -> tuple[list, np.ndarray]:
-        prices_by_artist = defaultdict(list)
+        names: list[str] = []
+        prices: list[float] = []
 
         with open(self.path, "r", encoding="utf-8", errors="replace") as f:
             next(f, None)  # skip header
@@ -49,8 +49,9 @@ class ShiScraper(AuctionScraper):
                     price = float(price_str)
                 except ValueError:
                     continue
-                prices_by_artist[artist].append(price)
+                if price <= 0:
+                    continue
+                names.append(artist)
+                prices.append(price)
 
-        names = sorted(prices_by_artist)
-        medians = np.array([np.median(prices_by_artist[n]) for n in names])
-        return names, medians
+        return names, np.array(prices)

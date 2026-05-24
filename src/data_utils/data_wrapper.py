@@ -10,7 +10,7 @@ from src.tokenizers.wiki_tokenizer import WikiTokenizer
 class AuctionScraper(ABC):
     """
     This is an abstract base class for getting data about artists and
-    their median auction prices.
+    the individual prices their works have fetched at auction.
     """
 
     @abstractmethod
@@ -19,19 +19,21 @@ class AuctionScraper(ABC):
         acceptance_function: Optional[Callable[[str], bool]] = None
         ) -> tuple[list, np.ndarray]:
         """
-        Returns a tuple of X and Y. X here is a list of names of artists. Y is
-        the corresponding array of their median auction prices.
+        Returns a tuple of X and Y with len(X) == len(Y). Each (X[i], Y[i]) is one
+        individual sale: X[i] is the artist's name and Y[i] is the price that a single
+        one of their works fetched at auction. The same artist will typically appear in
+        X many times — once per sale — so there will be many duplicate Xs paired with
+        different Ys.
 
         acceptance_function is an optional callable which, if provided, will only add
-        names to the returned list if acceptance_function returns true on the name.
+        sales whose artist name satisfies acceptance_function.
         """
         raise NotImplementedError
 
     def get_data_in_wiki(self, wiki: WikiTokenizer, only_entries: bool) -> tuple[list, np.ndarray]:
         """
-        Returns a tuple of X and Y. X here is a list of names of artists. Y is
-        the corresponding array of their median auction prices. Except the list of
-        artists here are ones whose names appear in the WikiTokenizer.
+        Same as `get_data`, but restricted to sales whose artist name appears in the
+        passed-in WikiTokenizer.
         
         Args:
             wiki: The WikiTokenizer (Wikipedia2Vec wrapper) in which we want to query.
