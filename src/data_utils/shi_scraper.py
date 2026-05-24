@@ -8,6 +8,8 @@ import numpy as np
 from src.data_utils.data_wrapper import AuctionScraper
 
 
+PATH = "data/shi_data/shit_data.txt"
+
 class ShiScraper(AuctionScraper):
     """
     Parses shi_data.txt and emits one (artist, price) pair per individual sale.
@@ -23,7 +25,7 @@ class ShiScraper(AuctionScraper):
     PRICE_COL = 7
     EXPECTED_COLS = 23
 
-    def __init__(self, path: str):
+    def __init__(self, path: str = PATH):
         self.path = path
 
     def get_data(
