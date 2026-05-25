@@ -39,6 +39,11 @@ def build_embedding_matrix(
     the matching list of resolved names, and the parallel list of styles.
     Artists missing from the model are skipped (and reported on stdout).
     """
+    artist_vec = wiki.get_vector(Token("artist", is_entity=False))
+    if artist_vec is None:
+        raise RuntimeError("Word 'artist' missing from Wikipedia2Vec vocabulary.")
+    artist_dir = artist_vec / np.linalg.norm(artist_vec)
+
     vectors: list[np.ndarray] = []
     resolved: list[str] = []
     styles: list[str] = []
@@ -48,6 +53,7 @@ def build_embedding_matrix(
         if vec is None:
             missing.append(name)
             continue
+        vec = vec - (vec @ artist_dir) * artist_dir
         vectors.append(vec)
         resolved.append(name)
         styles.append(style)

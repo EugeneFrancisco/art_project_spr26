@@ -137,6 +137,11 @@ class DNNVec2Price(Vec2Price):
     def test(self) -> float:
         return self._mse(self.X_test, self.y_test)
 
+    def test_baseline(self) -> float:
+        if len(self.y_test) == 0:
+            return float("nan")
+        return float(np.var(self.y_test))
+
     def get_pred(self, name: str | Token) -> float:
         vec = self.tokenizer.get_vector(name)
         if vec is None:

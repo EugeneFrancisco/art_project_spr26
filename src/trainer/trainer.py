@@ -36,6 +36,14 @@ class Vec2Price(ABC):
         """
 
     @abstractmethod
+    def test_baseline(self) -> float:
+        """
+        Return the variance of the test set, i.e. the MSE achieved by
+        always predicting the mean. Compare against `test()` to see
+        whether the model beats the constant-mean baseline.
+        """
+
+    @abstractmethod
     def get_pred(self, name: str | Token) -> float:
         """
         Get a predicted price for the passed in name.
